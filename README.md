@@ -35,6 +35,7 @@ A modern, responsive landing page showcasing GPT-3 AI capabilities with interact
 2. Vercel
 
 ## Project Structure
+
 gpt3-ai-landing/
 ├── public/
 │   └── assets/
@@ -82,15 +83,13 @@ gpt3-ai-landing/
 
 ### Installation
 1. Clone this repository
-*  bash                                                                                                                                                                                  *  git clone https://github.com/yourusername/gpt3-ai-landing.git
+                                                                                                                                                                                 *  git clone https://github.com/yourusername/gpt3-ai-landing.git
 * cd gpt3-ai-landing 
 2. Install dependencies
-* bash
 * npm install 
 # or
 yarn install
 3. Set up environment variables
-* bash
 * cp .env.example .env
 Edit .env file and add your GNews API key:
 * env
@@ -101,7 +100,6 @@ Edit .env file and add your GNews API key:
   c. Get your API key from the dashboard
   d. Add it to your .env file
 5. Run the development server
-* bash
 * npm run dev
 # or
 * yarn dev
