@@ -93,10 +93,10 @@ gpt3-ai-landing/
 #### Edit .env file and add your GNews API key:
   * VITE_GNEWS_API_KEY=your_gnews_api_key_here
 4. Get a GNews API Key
-  a. Visit GNews.io
-  b. Sign up for a free account
-  c. Get your API key from the dashboard
-  d. Add it to your .env file
+  *  Visit GNews.io
+  *  Sign up for a free account
+  *  Get your API key from the dashboard
+  *  Add it to your .env file
 5. Run the development server
   * npm run dev
   * or
