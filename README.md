@@ -82,17 +82,17 @@ gpt3-ai-landing/
 2. npm or yarn
 
 ### Installation
-1. Clone this repository                                                                                                                                                                   git clone https://github.com/yourusername/gpt3-ai-landing.git
-   cd gpt3-ai-landing 
+1. Clone this repository                                                                                                                                                                  * git clone https://github.com/yourusername/gpt3-ai-landing.git
+  * cd gpt3-ai-landing 
 2. Install dependencies
-   npm install 
-    or
-   yarn install
+  * npm install 
+  * or
+  * yarn install
 3. Set up environment variables
-   cp .env.example .env
+  * cp .env.example .env
 Edit .env file and add your GNews API key:
-   env
-   VITE_GNEWS_API_KEY=your_gnews_api_key_here
+  * env
+  * VITE_GNEWS_API_KEY=your_gnews_api_key_here
 4. Get a GNews API Key
   a. Visit GNews.io
   b. Sign up for a free account
