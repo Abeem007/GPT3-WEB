@@ -90,8 +90,7 @@ gpt3-ai-landing/
   * yarn install
 3. Set up environment variables
   * cp .env.example .env
-Edit .env file and add your GNews API key:
-  * env
+#### Edit .env file and add your GNews API key:
   * VITE_GNEWS_API_KEY=your_gnews_api_key_here
 4. Get a GNews API Key
   a. Visit GNews.io
@@ -99,18 +98,18 @@ Edit .env file and add your GNews API key:
   c. Get your API key from the dashboard
   d. Add it to your .env file
 5. Run the development server
-   npm run dev
-   or
-   yarn dev
+  * npm run dev
+  * or
+  * yarn dev
 6. Open your browser
-Navigate to http://localhost:5173
+  * Navigate to http://localhost:5173
 
 ## Deployment
-Deploy to Vercel
-npm run build
-vercel --prod
-Deploy to Netlify
-npm run build
+#### Deploy to Vercel
+  * npm run build
+  * vercel --prod
+#### Deploy to Netlify
+  * npm run build
 
 ## License
 This project is licensed under the MIT License 
