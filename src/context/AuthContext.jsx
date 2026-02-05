@@ -2,10 +2,10 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({children}) => {
-    const [authType, setAuthType] = useState(null);
-    const [user, setUser] = useState(null);
-    const [notification, setNotification] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [authType, setAuthType] = useState(null);
+  const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("gpt3_user");
@@ -14,7 +14,6 @@ export const AuthProvider = ({children}) => {
     }
   }, []);
 
-  
   const login = (email) => {
     const userData = { email };
     setUser(userData);
@@ -39,11 +38,21 @@ export const AuthProvider = ({children}) => {
     setNotification("Logged out");
     setTimeout(() => setNotification(null), 3000);
   };
-    
-    return (
-        <AuthContext.Provider value={{ authType, setAuthType, user,login,signup, logout, notification  }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+
+  return (
+    <AuthContext.Provider
+      value={{
+        authType,
+        setAuthType,
+        user,
+        login,
+        signup,
+        logout,
+        notification,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 export const useAuth = () => useContext(AuthContext);
