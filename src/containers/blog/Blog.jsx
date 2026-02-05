@@ -9,48 +9,53 @@ const Blog = () => {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     const fetchArticles = async () => {
       setIsLoading(true);
       setError(null);
+      setUsingFallback(false);
 
       try {
-        const API_KEY = import.meta.env.VITE_GNEWS_API_KEY;
+       
+        const apiUrl = "/api/gnews";
 
-        
-        if (!API_KEY) {
-          console.warn("API key not found, using static articles");
-          setArticles(generateStaticArticles());
-          setIsLoading(false);
-          return;
-        }
-
-        const url =
-          `https://gnews.io/api/v4/search?` +
-          `q=artificial intelligence OR machine learning OR generative AI OR OpenAI&` +
-          `topic=technology&lang=en&max=5&token=${API_KEY}`;
+       
+        const url = `${apiUrl}?t=${Date.now()}`;
 
         const response = await fetch(url, {
-         
-          signal: AbortSignal.timeout(10000),
+          signal: AbortSignal.timeout(15000), 
+          headers: {
+            Accept: "application/json",
+          },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          throw new Error(
+            `HTTP ${response.status}: ${errorText || "Server error"}`,
+          );
         }
 
         const data = await response.json();
 
        
+        if (data.error) {
+          throw new Error(data.message || data.error);
+        }
+
+       
         if (!data.articles || data.articles.length === 0) {
-          console.warn("No articles from API, using static articles");
+          console.warn("No articles returned from API");
+          setUsingFallback(true);
           setArticles(generateStaticArticles());
           setIsLoading(false);
           return;
         }
 
-        const filteredArticles = (data.articles || [])
+        
+        const processedArticles = data.articles
           .filter(
             (article) =>
               article.title &&
@@ -58,29 +63,47 @@ const Blog = () => {
                 article.title.toLowerCase().includes("artificial") ||
                 article.title.toLowerCase().includes("machine learning") ||
                 article.title.toLowerCase().includes("gpt") ||
-                article.title.toLowerCase().includes("openai")),
+                article.title.toLowerCase().includes("openai") ||
+                article.title.toLowerCase().includes("chatgpt") ||
+                article.title.toLowerCase().includes("generative")),
           )
+          .slice(0, 5) 
           .map((article, index) => ({
             ...article,
-            image: getValidImageUrl(article.image, index),
+           
+            title: article.title || "AI News Update",
+            description:
+              article.description ||
+              "Latest developments in artificial intelligence",
+            publishedAt: article.publishedAt || new Date().toISOString(),
+            url: article.url || "#",
+            source: article.source || { name: "AI News" },
+            image: getValidImageUrl(article.image, article.title, index),
           }));
 
-    
-        if (filteredArticles.length < 5) {
+       
+        if (processedArticles.length < 5) {
+          console.log(
+            `Only ${processedArticles.length} articles found, supplementing with static content`,
+          );
+          setUsingFallback(true);
           const staticArticles = generateStaticArticles();
           const combinedArticles = [
-            ...filteredArticles,
-            ...staticArticles.slice(filteredArticles.length, 5),
+            ...processedArticles,
+            ...staticArticles.slice(processedArticles.length, 5),
           ];
           setArticles(combinedArticles.slice(0, 5));
         } else {
-          setArticles(filteredArticles.slice(0, 5));
+          setArticles(processedArticles.slice(0, 5));
         }
       } catch (err) {
         console.error("Error fetching articles:", err);
-        setError("Failed to load articles. Showing static content instead.");
+        setError(
+          "Failed to load live articles. Showing example content instead.",
+        );
+        setUsingFallback(true);
 
-       
+     
         setArticles(generateStaticArticles());
       } finally {
         setIsLoading(false);
@@ -91,21 +114,36 @@ const Blog = () => {
   }, []);
 
  
-  const getValidImageUrl = (imageUrl, index) => {
-    
-    if (
+  const getValidImageUrl = (imageUrl, title, index) => {
+   
+    const invalidPatterns = [
+      "null",
+      "undefined",
+      "placeholder",
+      "default",
+      "no-image",
+      "missing",
+      "broken",
+    ];
+
+    const isInvalid =
       !imageUrl ||
-      imageUrl === "null" ||
-      imageUrl === "undefined" ||
+      invalidPatterns.some((pattern) =>
+        imageUrl.toLowerCase().includes(pattern),
+      ) ||
       !imageUrl.startsWith("http") ||
-      imageUrl.includes("placeholder")
-    ) {
-      return fallbackImages[index % fallbackImages.length];
+      imageUrl.length < 10; 
+
+    if (isInvalid) {
+  
+      const fallbackIndex = index % fallbackImages.length;
+      return fallbackImages[fallbackIndex];
     }
+
     return imageUrl;
   };
 
-
+  
   const generateStaticArticles = () => {
     const staticTitles = [
       "OpenAI Releases New GPT-4 Model with Multimodal Capabilities",
@@ -123,14 +161,22 @@ const Blog = () => {
       "Examining real-world applications of AI in medical fields",
     ];
 
+    const staticSources = [
+      "TechCrunch",
+      "AI Journal",
+      "MIT Technology Review",
+      "Wired",
+      "Forbes AI",
+    ];
+
     return staticTitles.map((title, index) => ({
       title,
       description:
         staticDescriptions[index] || "Latest developments in AI technology",
-      publishedAt: new Date().toISOString(),
+      publishedAt: new Date(Date.now() - index * 86400000).toISOString(), 
       url: "#",
       image: fallbackImages[index % fallbackImages.length],
-      source: { name: "AI Blog" },
+      source: { name: staticSources[index] || "AI Insights" },
     }));
   };
 
@@ -146,6 +192,7 @@ const Blog = () => {
         </div>
         <div className="gpt3__blog-container">
           <div className="gpt3__blog-loading">
+            <div className="loading-spinner"></div>
             <p>Loading latest AI news...</p>
           </div>
         </div>
@@ -153,11 +200,7 @@ const Blog = () => {
     );
   }
 
-  if (error) {
-    console.log(error); 
-  }
-
-
+ 
   const displayArticles =
     articles.length >= 5
       ? articles
@@ -171,30 +214,64 @@ const Blog = () => {
           <br />
           We are blogging about it.
         </h1>
-        {error && <p className="gpt3__blog-error">{error}</p>}
+
+        
+        <div className="gpt3__blog-status">
+          {error && <p className="gpt3__blog-error">⚠️ {error}</p>}
+          {usingFallback && !error && (
+            <p className="gpt3__blog-notice">📝 Showing example AI articles</p>
+          )}
+          {!usingFallback && !error && articles.length > 0 && (
+            <p className="gpt3__blog-success">✅ Latest AI news loaded</p>
+          )}
+        </div>
       </div>
+
       <div className="gpt3__blog-container">
         <div className="gpt3__blog-container_groupA">
           {displayArticles[0] && (
             <Article
               imgUrl={displayArticles[0].image}
-              date={new Date(displayArticles[0].publishedAt).toDateString()}
+              date={new Date(displayArticles[0].publishedAt).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                },
+              )}
               title={displayArticles[0].title}
               url={displayArticles[0].url}
+              source={displayArticles[0].source?.name}
             />
           )}
         </div>
+
         <div className="gpt3__blog-container_groupB">
           {displayArticles.slice(1).map((item, index) => (
             <Article
-              key={index}
+              key={`${index}-${item.title.substring(0, 20)}`}
               imgUrl={item.image}
-              date={new Date(item.publishedAt).toDateString()}
+              date={new Date(item.publishedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
               title={item.title}
               url={item.url}
+              source={item.source?.name}
             />
           ))}
         </div>
+      </div>
+
+
+      <div className="gpt3__blog-attribution">
+        <p>
+          {usingFallback
+            ? "Example content showcasing AI topics"
+            : "Powered by GNews API • AI and Technology News"}
+        </p>
       </div>
     </div>
   );
