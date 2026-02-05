@@ -2,7 +2,7 @@
 A modern, responsive landing page showcasing GPT-3 AI capabilities with interactive features and real-time content.
 
 ## Live Demo
-
+https://gpt-3-web-3b4e.vercel.app/#blog
 ##  Features
 ### Modern UI/UX
 1. Gradient Design: Beautiful gradient backgrounds and text effects.
