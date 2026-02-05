@@ -36,6 +36,7 @@ A modern, responsive landing page showcasing GPT-3 AI capabilities with interact
 
 ## Project Structure
 
+```bash
 gpt3-ai-landing/
 ├── public/
 │   └── assets/
@@ -75,6 +76,7 @@ gpt3-ai-landing/
 ├── package.json
 ├── vite.config.js
 └── README.md
+```
 
 ##  Quick Start
 ### Prerequisites
