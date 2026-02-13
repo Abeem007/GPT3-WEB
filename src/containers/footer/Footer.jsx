@@ -22,10 +22,22 @@ const Footer = () => {
         </div>
         <div className="gpt3__footer-links_div">
           <h4>Links</h4>
-          <p>Overons</p>
-          <p>Social Media</p>
-          <p>Counters</p>
-          <p>Contact</p>
+          <p>
+            <a href="#home">Home</a>
+          </p>
+          <p>
+            <a href="#wgpt3">What is GPTS</a>
+          </p>
+          <p>
+            <a href="#possibility">OpenAI</a>
+          </p>
+          <p>
+            <a href="#features">Case Studies</a>
+          </p>
+          <p>
+            {" "}
+            <a href="#blog">Library</a>{" "}
+          </p>
         </div>
         <div className="gpt3__footer-links_div">
           <h4>Company</h4>

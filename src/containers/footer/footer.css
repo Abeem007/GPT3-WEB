@@ -91,6 +91,19 @@
    margin: 0.5rem 0;
    cursor: pointer;
   }
+
+.gpt3__footer-links_div a {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-family);
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.gpt3__footer-links_div a:hover {
+  opacity: 0.8;
+}
+
   .gpt3__footer-copyright{
     margin-top: 2rem;
     text-align: center;
